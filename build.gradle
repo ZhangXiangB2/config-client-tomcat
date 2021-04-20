@@ -1,0 +1,43 @@
+plugins {
+    id "org.sonarqube" version "2.7"
+}
+
+
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'eclipse-wtp'
+ 
+sourceCompatibility = 1.8   // jdk
+sourceSets.main.java.srcDir 'src/main/java'   // java src
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
+ext['tomcat.version'] = '8.0.38'
+
+// Connect main maven repository
+repositories {
+	mavenCentral()
+}
+ 
+// Dependencies
+dependencies {
+    providedCompile 'javax.servlet:javax.servlet-api:3.0.1' // Compiler level
+    providedRuntime 'javax.servlet:jstl:1.2'    // Runtime level
+    compile('org.springframework.boot:spring-boot-starter:1.4.0.RELEASE'){
+    	exclude module : 'spring-boot-starter-logging'
+    	exclude module: 'spring-boot-starter-tomcat'
+    }
+    compile('org.springframework.boot:spring-boot-starter-web:1.4.0.RELEASE'){
+    	exclude module : 'spring-boot-starter-logging'
+    	exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+    }
+    providedRuntime group:'org.apache.tomcat', name:'tomcat-juli', version:property('tomcat.version')
+    compile('org.apache.tomcat:tomcat-coyote:8.0.38'){
+    	exclude module : 'tomcat-servlet-api'
+    }
+	compile group: 'org.springframework', name: 'spring-context-support', version: '4.3.10.RELEASE'
+   
+   	compile('org.springframework.cloud:spring-cloud-starter-config:1.4.0.RELEASE'){
+    	exclude module : 'spring-boot-starter-logging'
+    	exclude module: 'spring-boot-starter-tomcat'
+    }
+}
